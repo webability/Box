@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<language id="matrix" lang="en">
+  <entry id="error.matrix.noblock"><![CDATA[Error: the template 'block' for matrix is missing. Please verify your template code.]]></entry>
+  <entry id="error.matrix.noline"><![CDATA[Error: the template 'line' for matrix is missing. Please verify your template code.]]></entry>
+  <entry id="error.matrix.nocell"><![CDATA[Error: the template 'cell' for matrix is missing. Please verify your template code.]]></entry>
+  <entry id="error.matrix.noempty"><![CDATA[Error: the template 'empty' for matrix is missing. Please verify your template code.]]></entry>
+  <entry id="error.matrix.nocolumn"><![CDATA[Error: the template 'column' for matrix is missing. Please verify your template code.]]></entry>
+</language>

@@ -1,0 +1,247 @@
+<?php
+
+/*
+    engineBox.lib, Box Model, A pattern for Real-life Web Programming
+    This object is the engine to run a box framework, which is a box itself.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| engineBox: basic box class                                       |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+// the Engine of boxes framework
+// The descriptor have the following structure:
+/*
+  'boxes' => ( [boxid] => ( 'box' => [boxname],
+                            'inputs' => ( [inputid] => ( 'from' => [source], 'data' => [sourcedata]), ...
+                                        )
+                          ),
+               ...
+             ),
+  'outputs' => ( [outputid] => ( 'from' => [source], 'data' => [sourcedata] ), ...
+               )
+*/
+// [source] can be:
+// 'inputs' => will insert the input into the engineBox, and take the value from the inputs data of the engineBox when running
+// 'inline' => will take the value from the 'data' field directly
+// 'caller' => will call the caller object with the method in 'data', with the id of (input) as parameter
+// 'function' => will call the function in 'data', with the id of (input) as parameter
+// 'integrator' => will create an array with all the data into the 'data' array, every data is again a from/data parameter set.
+// [boxid] => will take the output 'data' of the box id
+
+// The descriptor file should be build by an admin 4GL GUI and used when needed
+
+class engineBox extends Box
+{
+  private $caller = null;
+  private $descriptor = null;
+  private $boxes = array();
+  private $executed = array();
+  private $executing = array();
+
+  public function __construct($descriptor, $caller = null)
+  {
+    parent::__construct();
+
+    if (self::$debug || $this->localdebug)
+      $this->doDebug("engineBox::__construct(descriptor)", WADebug::SYSTEM);
+
+    $this->caller = $caller;
+
+    if (is_string($descriptor))
+    {
+      // FILENAME ?
+      // XML STRING TO PARSE ?
+    }
+    $this->descriptor = $descriptor;
+    $this->parse();
+  }
+
+  private function parseInput($bid, $iid, $input)
+  {
+    $data = null;
+    switch($input['from'])
+    {
+      case 'inputs':
+        if (!$this->getInputType($input['data']))
+        {
+          if (!$bid)
+          {
+            $this->addInput($input['data'], Box::MIXED, null);
+          }
+          else
+          {
+            $itype = $this->boxes[$bid]->getInputType($iid);
+            $idef = $this->boxes[$bid]->getInputDefault($iid);
+            $this->addInput($input['data'], $itype, $idef);
+          }
+        }
+        break;
+      case 'integrator':
+        if ($input['data'] && is_array($input['data']))
+        {
+          foreach($input['data'] as $id2 => $input2)
+          {
+            $this->parseInput(null, $id2, $input2);
+          }
+        }
+        break;
+    }
+  }
+
+  // creates the macrobox inputs, outputs, preload boxes
+  private function parse()
+  {
+    if (!$this->descriptor['boxes'])
+      throw new BoxError('Error, there is no boxes into the descriptor');
+
+    // load boxes and set inputs
+    foreach($this->descriptor['boxes'] as $bid => $b)
+    {
+      if (!isset($this->boxes[$bid]))
+      {
+        $this->boxes[$bid] = new $b['box']();
+        $this->executed[$bid] = false;
+      }
+      if (isset($b['inputs']) && is_array($b['inputs']))
+      {
+        foreach($b['inputs'] as $iid => $input)
+        {
+          $this->parseInput($bid, $iid, $input);
+        }
+      }
+    }
+    // set outputs
+    if (isset($this->descriptor['outputs']))
+    {
+      foreach($this->descriptor['outputs'] as $oid => $output)
+      {
+        $this->addOutput($oid, Box::MIXED);
+      }
+    }
+  }
+
+  private function selectInput($box, $id, $input)
+  {
+    $data = null;
+    switch($input['from'])
+    {
+      case 'inputs':
+        $data = $this->getInputData($input['data']);
+        break;
+      case 'inline':
+        $data = $input['data'];
+        break;
+      case 'caller':
+        $data = $this->caller->$input['data']($id);
+        break;
+      case 'function':
+        $data = $input['data']($id);
+        break;
+      case 'integrator':
+        $data = array();
+        if ($input['data'] && is_array($input['data']))
+        {
+          foreach($input['data'] as $id2 => $input2)
+          {
+            $data[$id2] = $this->selectInput(null, $id2, $input2);
+          }
+        }
+        break;
+      default:
+        if (!isset($this->boxes[$input['from']]))
+          throw new BoxError('Error, there is no box called ' . $input['from']);
+        // call the input boxes if needed
+        // lets save some code
+        if (!$this->executed[$input['from']])
+        {
+          $this->execute($input['from']);
+        }
+        $data = $this->boxes[$input['from']]->getOutputData($input['data']);
+        break;
+    }
+    if ($box)
+      $box->setInputData($id, $data);
+    return $data;
+  }
+
+  private function execute($boxID)
+  {
+    if (self::$debug || $this->localdebug)
+      $this->doDebug("engineBox::execute($boxID)", WADebug::SYSTEM);
+
+    if ($this->executed[$boxID])
+      return;
+    if (isset($this->executing[$boxID]))
+    {
+      throw new BoxError('Error, there is a loop in the box flow');
+      // Error: is there a LOOP into the descriptor ???
+    }
+    $this->executing[$boxID] = true;
+
+    $b = $this->descriptor['boxes'][$boxID];
+    $box = $this->boxes[$boxID];
+
+    // inject the inputs
+    if (isset($b['inputs']) && $b['inputs'])
+    {
+      foreach($b['inputs'] as $id => $input)
+      {
+        $this->selectInput($box, $id, $input);
+      }
+    }
+
+    // 4. run the box
+    $box->run();
+
+    unset($this->executing[$boxID]);
+    $this->executed[$boxID] = true;
+  }
+
+  // reset the flow for another pass
+  public function reset($boxes = false)
+  {
+    $this->executed = array();
+    $this->executing = array();
+    if ($boxes)
+      $this->boxes = array();
+  }
+
+  // replace the oficial getOutputData
+  public function getOutputData($oID)
+  {
+    // Run the box framework based on the descriptor
+    if (!isset($this->descriptor['outputs'][$oID]))
+      throw new BoxError('Error, there is no output with this ID');
+
+    if (!$this->executed[$this->descriptor['outputs'][$oID]['from']])
+    {
+      $this->execute($this->descriptor['outputs'][$oID]['from']);
+    }
+
+    return $this->boxes[$this->descriptor['outputs'][$oID]['from']]->getOutputData($this->descriptor['outputs'][$oID]['data']);
+  }
+
+}
+
+?>

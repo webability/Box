@@ -1,0 +1,42 @@
+<?php
+
+// Gets the quantity of product of the category
+// entry: none
+// exit: quantity
+// params: category of products
+
+class productcountBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('CATEGORY', Box::STRING, 'main');
+    $this->addOutput('quantity', Box::INTEGER);
+  }
+
+  public function run()
+  {
+    // Simulates a connection to a database and gets back
+    // 5 products if 'main' category, 3 products if 'other' category
+
+    $CATEGORY = trim($this->getInputData('CATEGORY'));
+    if ($CATEGORY != 'main' && $CATEGORY != 'other')
+    {
+      $CATEGORY = 'main';
+    }
+
+    // Here we should make a query like
+    // select count(*) from products where category = '$CATEGORY';
+
+    if ($CATEGORY == 'main')
+      $q = 5;
+    else
+      $q = 3;
+
+    $this->setOutputData('quantity', $q);
+  }
+
+}
+
+?>

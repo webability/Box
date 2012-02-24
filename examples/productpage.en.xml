@@ -1,0 +1,6 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<language id="product" lang="en">
+  <entry id="name"><![CDATA[Name]]></entry>
+  <entry id="price"><![CDATA[Price]]></entry>
+  <entry id="cart"><![CDATA[Add to cart]]></entry>
+</language>

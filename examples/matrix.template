@@ -1,0 +1,40 @@
+__BLOCK__
+
+%%SUBTEMPLATE(block)%%
+<table cellpadding="0" cellspacing="0" border="0" width="100%">
+__LINES__
+</table>
+
+%%SUBTEMPLATE(line)%%
+<tr>
+__CELLS__
+</tr>
+
+%-- the cell format id is:
+
+classification.cell.[counter].replace     is the template to insert for this specific cell counter (data is moved to the right)
+classification.cell.[counter].place       is the template to use for this specific cell counter
+classification.cell.[key of data].key     is the template for this specific key
+classification.cell.[column].column       is the template for this column
+classification.cell.[line].line           is the template for this line
+classification.cell.1                     is the default template used if none of above is available
+
+--%
+
+%%SUBTEMPLATE(cell.1)%%
+<td style="width: 33%; text-align: center; vertical-align: top; padding-bottom: 10px; border: 1px solid blue;">__CONTENT__</td>
+%%ENDSUBTEMPLATE%%
+
+%%SUBTEMPLATE(cell.empty)%%
+<td style="width: 33%; text-align: center; vertical-align: top;">&nbsp;</td>
+%%ENDSUBTEMPLATE%%
+
+%%ENDSUBTEMPLATE%%
+
+%-- If there is nothing to show --%
+
+%%SUBTEMPLATE(noblock)%%
+&nbsp;
+%%ENDSUBTEMPLATE%%
+
+%%ENDSUBTEMPLATE%%

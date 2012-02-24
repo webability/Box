@@ -1,0 +1,74 @@
+<?php
+
+// Gets the list of products of the category
+// entry: min, num
+// exit: list
+// params: category of products
+
+class productqueryBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('CATEGORY', Box::STRING);
+    $this->addInput('min', Box::INTEGER);
+    $this->addInput('num', Box::INTEGER);
+
+    $this->addOutput('list', Box::VECTORRECORD);
+  }
+
+  public function run()
+  {
+    // Simulates a connection to a database and gets back
+    // 5 products if 'main' category, 3 products if 'other' category
+    $min = trim($this->getInputData('min'));
+    $num = trim($this->getInputData('num'));
+
+    $CATEGORY = trim($this->getInputData('CATEGORY'));
+    if ($CATEGORY != 'main' && $CATEGORY != 'other')
+    {
+      $CATEGORY = 'main';
+    }
+
+    // Here we should make a query like
+    // select count(*) from products where category = '$CATEGORY' limit $num offset $min;
+
+    if ($CATEGORY == 'main')
+    {
+      $products = array(
+        array('{key}' => 1, '{name}' => 'Trousers', '{price}' => 12.5),
+        array('{key}' => 2, '{name}' => 'Skirt', '{price}' => 11.5),
+        array('{key}' => 3, '{name}' => 'Bicycle', '{price}' => 99.9),
+        array('{key}' => 4, '{name}' => 'Ball', '{price}' => 5),
+        array('{key}' => 5, '{name}' => 'Jewel', '{price}' => 125)
+      );
+    }
+    else
+    {
+      $products = array(
+        array('{key}' => 1, '{name}' => 'Trousers', '{price}' => 12.5),
+        array('{key}' => 2, '{name}' => 'Skirt', '{price}' => 11.5),
+        array('{key}' => 6, '{name}' => 'Skateboard', '{price}' => 24.9)
+      );
+    }
+
+    // we filter num, min if needed, to simulate limit and offset
+    $npr = array();
+    $item = 0;
+    foreach($products as $p)
+    {
+      if ($item++ < $min)
+        continue;
+      $npr[] = $p;
+      if ($item >= $min + $num)
+        break;
+    }
+    $products = $npr;
+
+    $this->setOutputData('list', $products);
+  }
+
+}
+
+?>

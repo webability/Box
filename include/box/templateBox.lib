@@ -1,0 +1,132 @@
+<?php
+
+/*
+    templateBox.lib, Box Model, A pattern for Real-life Web Programming
+    Integrates a template with any data array, parameters, languages.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| templateBox: basic box class                                     |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+// load a template then replace the elements into it
+// entry: array of elements
+// exit: template with replaced elements
+// params: template name and place
+
+class templateBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('language', Box::LANGUAGE);
+    $this->addInput('template', Box::TEMPLATE);
+    $this->addInput('elements', Box::VECTOR);
+
+    $this->addOutput('template', Box::TEMPLATE);
+  }
+
+  protected function replaceTemplate($template, $language, $elements)
+  {
+
+  }
+
+  public function run()
+  {
+    // name and place of template are params
+    // elements are entry array
+    // languages are entry array
+    // exit is the template loaded with elements
+
+
+    // %%XX%% IS TEMPLATE REPLACE ONLY
+    // @@XX@@ IS A LOOP TEMPLATE
+    // ??XX?? IS A IF/CASE/NONE TEMPLATE
+    // __XX__ and {xx} are elements to replace with array of data entry (params and fields)
+    // ##xx## are elements to replace with language
+    // ##xx{xx}## are elements to replace with languages based on fields
+    // subtemplates(id.action.subaction): id must corresponde to __XX__ when needed
+    // if there is a loop, the element MUST have id of loop and MUST be an array
+    /*
+    $metaelement = array(
+      '__DATA1__' => 1, // params
+      '__DATA2__' => 2,
+      '{field1}' => 11, // fields
+      '{field2}' => 11,
+      '##lang1##' => '', // language
+      '##lang2##' => '',
+
+      '%subt1' => array(
+                         '__DATAX__' => 'x',
+                         '{field1}' => '1',
+                     ),
+      '@loop1:special' => array(    // if null or array empty, use NONE, then use loop, loopalt and loop.{key}
+                       'key1' => array(
+                           '__DATAX__' => 'x',
+                           '{field1}' => '1',
+                           '{field2}' => '2',
+                           'special' => 1
+                         ),
+                       'key2' => array(
+                           '__DATAY__' => 'y',
+                           '{field1}' => '1',
+                           '{field2}' => '2'
+                         ),
+                       'key3' => array(
+                           '__DATAZ__' => 'Z',
+                           '{field1}' => '1',
+                           '{field2}' => '2'
+                         ),
+                     ),
+
+      '?{field1}:if1' => array(       // if null, => if1.none, if value => DEF TEMPLATE, or if template if1.value => this template
+                           '__DATAY__' => 'y',
+                           '{field1}' => '1',
+                           '{field2}' => '2'
+                      )
+
+
+    );
+    */
+
+    $t = $this->getInputData('template');
+    if (!$t)
+      return;
+
+    $l = $this->getInputData('language');
+    $e = $this->getInputData('elements');
+
+    $metaelements = $e;
+    if ($l)
+    {
+      foreach($l as $k => $le)
+        $metaelements['##'.$k.'##'] = $le;
+    }
+    $t->metaElements($metaelements);
+
+    $this->setOutputData('template', $t);
+  }
+}
+
+?>

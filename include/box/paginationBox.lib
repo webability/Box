@@ -1,0 +1,220 @@
+<?php
+
+/*
+    paginationBox.lib, Box Model, A pattern for Real-life Web Programming
+    Creates a pagination template.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| paginationBox: basic box class                                   |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+// creates a pagination
+// entry: quantity of elements
+// exit: min, numperpage, armed template
+
+class paginationBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('VARPAGE', Box::STRING, 'page');
+    $this->addInput('DEFAULTPAGE', Box::INTEGER, 1);
+    $this->addInput('PAGE', Box::INTEGER, null);
+    $this->addInput('VARMAXPERPAGE', Box::STRING, '');
+    $this->addInput('MAXPERPAGE', Box::INTEGER, 1);
+    $this->addInput('PAGENUMLEFT', Box::INTEGER, 1);
+    $this->addInput('PAGENUMCENTER', Box::INTEGER, 1);
+    $this->addInput('PAGENUMRIGHT', Box::INTEGER, 1);
+    $this->addInput('quantity', Box::INTEGER);
+    $this->addInput('language', Box::LANGUAGE);
+    $this->addInput('template', Box::TEMPLATE);
+
+    $this->addOutput('min', Box::INTEGER);
+    $this->addOutput('num', Box::INTEGER);
+    $this->addOutput('template', Box::TEMPLATE);
+  }
+
+  public function run()
+  {
+    // name and place of template are params
+    // elements are entry array
+    // languages are entry array
+    // exit is the template loaded with elements
+
+    // we get: VARPAGE, PAGE, MAXPERPAGE, PAGENUMLEFT, PAGENUMCENTER, PAGENUMRIGHT
+    // we return: PAGE, FIRST, MAXPERPAGE, PAGENUMLEFT, PAGENUMCENTER, PAGENUMRIGHT
+    $PAGE = (int)$this->getInputData('PAGE');
+    if (!$PAGE || $PAGE < 1)
+      $PAGE = (int)$this->getInputData('DEFAULTPAGE');
+    if (!$PAGE || $PAGE < 1)
+      $PAGE = 1;
+    $MAXPERPAGE = (int)$this->getInputData('MAXPERPAGE');
+    if (!$MAXPERPAGE)
+      $MAXPERPAGE = 1;
+    $PAGEMAX = (int)(($this->getInputData('quantity')-1) / $MAXPERPAGE) + 1;
+    if ($PAGE > $PAGEMAX)
+      $PAGE = $PAGEMAX;
+
+    $first = ($PAGE-1)*$MAXPERPAGE;
+
+    $this->setOutputData('min', $first);
+    $this->setOutputData('num', $MAXPERPAGE);
+
+    // now we must create the template
+    $VARPAGE = trim($this->getInputData('VARPAGE'));
+    $VARMAXPERPAGE = trim($this->getInputData('VARMAXPERPAGE'));
+    $PAGENUMLEFT = $this->getInputData('PAGENUMLEFT');
+    $PAGENUMCENTER = $this->getInputData('PAGENUMCENTER');
+    $PAGENUMRIGHT = $this->getInputData('PAGENUMRIGHT');
+
+    $temp = $this->getInputData('template');
+    if (!$temp)
+    {
+      $this->setOutputData('template', null);
+      return;
+    }
+
+    // PAGES are:
+    //    [1] [2] [3] ... [x-1] [x] [x+1] ... [N-2] [N-1] [N]
+
+    if ($PAGEMAX > $PAGENUMLEFT + $PAGENUMCENTER + $PAGENUMRIGHT)
+    {
+      // 1. we check bandwidth
+      $minleft = 1;
+      $maxleft = $PAGENUMLEFT;
+
+      $mincenter = $PAGE - Floor($PAGENUMCENTER / 2);
+      $maxcenter = $PAGE + Floor($PAGENUMCENTER / 2);
+
+      $minright = $PAGEMAX - $PAGENUMRIGHT + 1;
+      $maxright = $PAGEMAX;
+
+      // 2. we adjust if some are common
+      if ($maxleft+1 >= $mincenter)
+      {
+        $mincenter = $minleft;
+        if ($maxleft > $maxcenter)
+          $maxcenter = $maxleft;
+        $minleft = $maxleft = null;
+      }
+
+      if ($maxcenter+1 >= $minright)
+      {
+        if ($minright < $mincenter)
+          $mincenter = $minright;
+        $maxcenter = $maxright;
+        $minright = $maxright = null;
+      }
+      if ($mincenter < 1)
+        $mincenter = 1;
+      if ($maxcenter > $PAGEMAX)
+        $maxcenter = $PAGEMAX;
+    }
+    else
+    { // few pages
+      $minleft = $maxleft = null;
+      $mincenter = 1;
+      $maxcenter = $PAGEMAX;
+      $minright = $maxright = null;
+    }
+
+    if ($mincenter == 1 && $maxcenter == 1)
+    {
+      $block = $temp->getTemplate("noblock");
+      if (!$block)
+        throw new ExceptionBase($lang["error.pagination.noblock"]);
+    }
+    else
+    {
+      // 3. We integrate the template
+      $block = $temp->getTemplate("block");
+      if (!$block)
+        throw new ExceptionBase($lang["error.pagination.noblock"]);
+
+      $tpage = $block->getTemplate("page");
+      $tspage = $block->getTemplate("page.selected");
+      $itpage = $block->getTemplate("interpage");
+      $ibpage = $block->getTemplate("interblock");
+
+      // left
+      if ($minleft !== null)
+      {
+        for ($i = $minleft; $i <= $maxleft; $i ++)
+        {
+          if ($i > $minleft && $itpage)
+            $block->addElement("__PAGES__", $itpage->getClone());
+
+          $p = ($i==$PAGE?$tspage->getClone():$tpage->getClone());
+          $p->addElement("__PAGENUM__", $i);
+
+          $block->addElement("__PAGES__", $p);
+        }
+      }
+
+      if ($minleft !== null && $ibpage)
+        $block->addElement("__PAGES__", $ibpage->getClone());
+
+      // center
+      for ($i = $mincenter; $i <= $maxcenter; $i ++)
+      {
+        if ($i > $mincenter && $itpage)
+          $block->addElement("__PAGES__", $itpage->getClone());
+
+        $p = ($i==$PAGE?$tspage->getClone():$tpage->getClone());
+        $p->addElement("__PAGENUM__", $i);
+
+        $block->addElement("__PAGES__", $p);
+      }
+
+      if ($minright !== null && $ibpage)
+        $block->addElement("__PAGES__", $ibpage->getClone());
+
+      // right
+      if ($minright !== null)
+      {
+        for ($i = $minright; $i <= $maxright; $i ++)
+        {
+          if ($i > $minright && $itpage)
+            $block->addElement("__PAGES__", $itpage->getClone());
+
+          $p = ($i==$PAGE?$tspage->getClone():$tpage->getClone());
+          $p->addElement("__PAGENUM__", $i);
+
+          $block->addElement("__PAGES__", $p);
+        }
+      }
+    }
+
+    $temp->addElement("__BLOCK__", $block);
+    $temp->addElement("__VARPAGE__", $VARPAGE);
+    $temp->addElement("__VARMAXPERPAGE__", $VARMAXPERPAGE);
+    $temp->addElement("__MAXPERPAGE__", $MAXPERPAGE);
+
+    $this->setOutputData('template', $temp);
+  }
+
+}
+
+?>

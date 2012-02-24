@@ -1,0 +1,6 @@
+%%SUBTEMPLATE(base)%%
+##name##: <a href="__PAGEPRODUCT__?__VARCATEGORY__=__CATEGORY__&amp;__VARPRODUCT__={key}" class="protitle">{name}</a><br />
+##price##: {price}<br />
+
+<br /><a href="__PAGECART__?CARTOrder=add&amp;__VARCATEGORY__=__CATEGORY__&amp;__VARPRODUCT__={key}" class="procart">##cart##</a>
+%%ENDSUBTEMPLATE%%

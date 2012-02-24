@@ -1,0 +1,4 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<language id="pagination" lang="en">
+  <entry id="error.pagination.noblock"><![CDATA[Error: the template 'block' for pagination is missing. Please verify your template code.]]></entry>
+</language>

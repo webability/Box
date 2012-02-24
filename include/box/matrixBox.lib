@@ -1,0 +1,258 @@
+<?php
+
+/*
+    matrixBox.lib, Box Model, A pattern for Real-life Web Programming
+    Creates a matrix template with an array.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| matrixBox: basic box class                                       |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+// creates a matrix
+
+class matrixBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('ORIENTATION', Box::STRING, 'HORIZONTAL');
+    $this->addInput('NUMCELL', Box::INTEGER, 100);
+    $this->addInput('NUMMAX', Box::INTEGER, 1000);
+    $this->addInput('language', Box::LANGUAGE);
+    $this->addInput('template', Box::TEMPLATE);
+    $this->addInput('list', Box::VECTORTEMPLATE);
+
+    $this->addOutput('template', Box::TEMPLATE);
+  }
+
+  public function run()
+  {
+    // name and place of template are params
+    // elements are entry array
+    // languages are entry array
+    // exit is the template loaded with elements
+    $temp = $this->getInputData('template');
+    if (!$temp)
+      return;
+
+    $lang = $this->getInputData('language');
+    $Content = $this->getInputData('list');
+
+    if (sizeof($Content) == 0)
+      return $temp->getTemplate("noblock");
+
+    $ORIENTATION = 'HORIZONTAL';
+    if ($this->getInputData("ORIENTATION"))
+      $ORIENTATION = $this->getInputData("ORIENTATION");
+    if ($ORIENTATION != 'HORIZONTAL' && $ORIENTATION != 'VERTICAL')
+      $ORIENTATION = 'HORIZONTAL';
+
+    $NUMCELL = 1;
+    if ($this->getInputData("NUMCELL"))
+      $NUMCELL = $this->getInputData("NUMCELL");
+    if (!$NUMCELL || !is_numeric($NUMCELL) || $NUMCELL < 1 || $NUMCELL > 100)
+      $NUMCELL = 1;
+
+    $NUMMAX = 1000;
+    if ($this->getInputData("NUMMAX"))
+      $NUMMAX = $this->getInputData("NUMMAX");
+    if (!$NUMMAX || is_numeric($NUMMAX) || $NUMMAX < 1 || $NUMMAX > 1000)
+      $NUMMAX = 1000;
+
+    $block = null;
+    if (isset($Content['block']))
+      $block = $temp->getTemplate("block.".$Content['block']);
+    if (!$block)
+      $block = $temp->getTemplate("block");
+    if (!$block)
+      throw new BoxError($lang->getEntry("error.matrix.noblock"));
+
+
+    $interline = $block->getTemplate("interline");
+    $intercell = $block->getTemplate("intercell");
+
+    if ($ORIENTATION == "HORIZONTAL")
+    {
+      $line = $block->getTemplate("line");
+      if (!$line)
+        throw new BoxError($lang->getEntry("error.matrix.noline"));
+
+      $k = 0;
+      $colnum = $linenum = $numtotal = 1;
+      while (isset($Content[$k]))
+      {
+        if ($colnum == 1)
+        {
+          $linet = $line->getClone();
+          if ($linenum > 1 && $interline)
+          {
+            $block->addElement("__LINES__", $interline->getClone());
+          }
+        }
+        else if ($intercell)
+          $linet->addElement("__CELLS__", $intercell->getClone());
+
+        // we first try for template replacement
+        $cell = $line->getTemplate("cell.".$numtotal.".replace");
+        if (!$cell)
+        {
+          // then we search for special place template
+          $cell = $line->getTemplate("cell.".$numtotal.".place");
+          if (!$cell)
+          {
+            // then we search for special KEY template
+            $cell = $line->getTemplate("cell.".$Content[$k]["key"].".key");
+            if (!$cell)
+            {
+              // we finally search for odd/even normal templates
+              $cell = $line->getTemplate("cell.".$colnum.".column");
+              if (!$cell)
+              {
+                $cell = $line->getTemplate("cell.".$linenum.".line");
+                if (!$cell)
+                  $cell = $line->getTemplate("cell.1");
+                if (!$cell)
+                  throw new BoxError($lang->getEntry("error.matrix.nocell"));
+              }
+            }
+          }
+          $cell->addElement("__CONTENT__", $Content[$k++]["template"]);
+        }
+
+        $linet->addElement("__CELLS__", $cell);
+
+        if (++$colnum > $NUMCELL)
+        {
+          $colnum = 1;
+          $block->addElement("__LINES__", $linet);
+        }
+        $numtotal++;
+      }
+
+      if ($NUMCELL > 1)
+      {
+        if ($colnum <= $NUMCELL && $colnum > 1)
+        {
+          $cell = $line->getTemplate("cell.empty");
+          if (!$cell)
+            throw new BoxError($lang->getEntry("error.matrix.noempty"));
+          for ($i = $colnum; $i <= $NUMCELL; $i++)
+          {
+            if ($i > 1 && $intercell)
+              $linet->addElement("__CELLS__", $intercell->getClone());
+            $linet->addElement("__CELLS__", $cell->getClone());
+          }
+        }
+        if ($colnum > 1)
+          $block->addElement("__LINES__", $linet);
+      }
+
+      $temp->addElement("__BLOCK__", $block);
+    }
+    else if ($ORIENTATION == "VERTICAL")
+    {
+      $line = $block->getTemplate("column");
+      if (!$line)
+        throw new BoxError($lang->getEntry("error.matrix.nocolumn"));
+
+      $k = 0;
+      $colnum = $linenum = $numtotal = 1;
+      while (isset($Content[$k]))
+      {
+        if ($colnum == 1)
+        {
+          $linet = $line->getClone();
+          if ($linenum > 1 && $interline)
+          {
+            $block->addElement("__LINES__", $interline->getClone());
+          }
+        }
+        else if ($intercell)
+          $linet->addElement("__CELLS__", $intercell->getClone());
+
+        // we first try for template replacement
+        $cell = $line->getTemplate("cell.".$numtotal.".replace");
+        if (!$cell)
+        {
+          // then we search for special place template
+          $cell = $line->getTemplate("cell.".$numtotal.".place");
+          if (!$cell)
+          {
+            // then we search for special KEY template
+            $cell = $line->getTemplate("cell.".$Content[$k]["key"].".key");
+            if (!$cell)
+            {
+              // we finally search for odd/even normal templates
+              $cell = $line->getTemplate("cell.".$colnum.".column");
+              if (!$cell)
+              {
+                $cell = $line->getTemplate("cell.".$linenum.".line");
+                if (!$cell)
+                  $cell = $line->getTemplate("cell.1");
+                if (!$cell)
+                  throw new BoxError($lang->getEntry("error.matrix.nocell"));
+              }
+            }
+          }
+          $cell->addElement("__CONTENT__", $Content[$k++]["template"]);
+        }
+
+        $linet->addElement("__CELLS__", $cell);
+
+        if (++$colnum > $NUMCELL)
+        {
+          $colnum = 1;
+          $block->addElement("__LINES__", $linet);
+        }
+        $numtotal++;
+      }
+
+      if ($NUMCELL > 1)
+      {
+        if ($colnum <= $NUMCELL && $colnum > 1)
+        {
+          $cell = $line->getTemplate("cell.empty");
+          if (!$cell)
+            throw new BoxError($lang->getEntry("error.matrix.noempty"));
+          for ($i = $colnum; $i <= $NUMCELL; $i++)
+          {
+            if ($i > 1 && $intercell)
+              $linet->addElement("__CELLS__", $intercell->getClone());
+            $linet->addElement("__CELLS__", $cell->getClone());
+          }
+        }
+        if ($colnum > 1)
+          $block->addElement("__LINES__", $linet);
+      }
+
+      $temp->addElement("__BLOCK__", $block);
+    }
+
+    $this->setOutputData('template', $temp);
+  }
+
+}
+
+?>

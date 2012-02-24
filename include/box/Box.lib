@@ -1,0 +1,174 @@
+<?php
+
+/*
+    Box.lib, Box Model, A pattern for Real-life Web Programming
+    This object is the basic box class.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| Box: basic box class                                             |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+class Box extends WAObject
+{
+  // Version of Box Model
+  const VERSION = '1.00.01';
+
+  // Types of Input/Output
+  const INTEGER = 1;
+  const STRING = 2;
+  const RECORD = 3;
+  const VECTORRECORD = 4;
+  const OBJECT = 5;
+  const VECTOR = 6;
+  const TEMPLATE = 10;
+  const VECTORTEMPLATE = 11;
+  const LANGUAGE = 20;
+  const VECTORLANGUAGE = 21;
+  const VECTORTRANSLATION = 22;
+  const MIXED = 31;
+
+  private $input = array();
+  private $inputdata = array();
+  private $output = array();
+  private $outputdata = array();
+
+  public function __construct()
+  {
+    parent::__construct();
+  }
+
+  protected function addInput($id, $type, $default = null)
+  {
+    if (isset($this->input[$id]))
+      throw new BoxError('Error, there is already an input with this ID: ' . $id);
+    $this->input[$id] = $type;
+    $this->inputdata[$id] = $default;
+  }
+
+  public function getInputs()
+  {
+    return $this->input;
+  }
+
+  public function getInputType($id)
+  {
+    if (isset($this->input[$id]))
+      return $this->input[$id];
+    return null;
+  }
+
+  public function getInputDefault($id)
+  {
+    if (isset($this->input[$id]))
+      return $this->inputdata[$id];
+    return null;
+  }
+
+  public function setInputs($inputs)
+  {
+    foreach ($inputs as $id => $data)
+    {
+      if (isset($this->input[$id]))
+        $this->inputdata[$id] = $data;
+    }
+  }
+
+  public function setInputData($id, $data)
+  {
+    if (isset($this->input[$id]))
+      $this->inputdata[$id] = $data;
+  }
+
+  protected function getInputData($id)
+  {
+    if (isset($this->input[$id]))
+    {
+      // prebuild: template and language COULD BE a file or a string
+      if ($this->input[$id] == Box::TEMPLATE)
+      {
+        if (is_string($this->inputdata[$id]))
+        {
+          if (strlen($this->inputdata[$id]) < 512 && is_file($this->inputdata[$id]))
+            return new WATemplate(file_get_contents($this->inputdata[$id]));
+          else
+            return new WATemplate($this->inputdata[$id]);
+        }
+      }
+      elseif ($this->input[$id] == Box::LANGUAGE)
+      {
+        if (is_string($this->inputdata[$id]))
+        {
+          if (strlen($this->inputdata[$id]) < 512 && is_file($this->inputdata[$id]))
+            return new WALanguage(file_get_contents($this->inputdata[$id]));
+          else
+            return new WALanguage($this->inputdata[$id]);
+        }
+      }
+      return $this->inputdata[$id];
+    }
+    throw new BoxError('Error, there is no input with this ID: ' . $id);
+  }
+
+  protected function addOutput($id, $type)
+  {
+    if (isset($this->output[$id]))
+      throw new BoxError('Error, there is already an output with this ID: ' . $id);
+    $this->output[$id] = $type;
+    $this->outputdata[$id] = null;
+  }
+
+  public function getOutputs()
+  {
+    return $this->output;
+  }
+
+  public function getOutputType($id)
+  {
+    if (isset($this->output[$id]))
+      return $this->output[$id];
+    return null;
+  }
+
+  protected function setOutputData($id, $data)
+  {
+    if (!isset($this->output[$id]))
+      throw new BoxError('Error, there is no output with this ID: ' . $id);
+    $this->outputdata[$id] = $data;
+  }
+
+  public function getOutputData($id)
+  {
+    if (isset($this->output[$id]))
+      return $this->outputdata[$id];
+    return null;
+  }
+
+  public function run()
+  {
+    // must be defined by inheritance
+  }
+
+}
+
+?>

@@ -1,0 +1,32 @@
+__BLOCK__
+
+%%SUBTEMPLATE(block)%%
+<table cellpadding="0" cellspacing="1" border="1">
+__PAGES__
+</table>
+
+%-- PAGES are:
+    [1] [2] [3] ... [x-1] [x] [x+1] ... [N-2] [N-1] [N]
+--%
+
+%%SUBTEMPLATE(page)%%
+<td>[<a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a>]</td>
+%%ENDSUBTEMPLATE%%
+
+%%SUBTEMPLATE(page.selected)%%
+<td>[[<a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a>]]</td>
+%%ENDSUBTEMPLATE%%
+
+%%SUBTEMPLATE(interpage)%%
+<td>&nbsp;-&nbsp;</td>
+%%ENDSUBTEMPLATE%%
+
+%%SUBTEMPLATE(interblock)%%
+<td>...</td>
+%%ENDSUBTEMPLATE%%
+
+%%ENDSUBTEMPLATE%%
+
+%-- If there is nothing to show --%
+
+%%SUBTEMPLATE(noblock)%%%%ENDSUBTEMPLATE%%
