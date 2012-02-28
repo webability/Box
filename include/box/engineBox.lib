@@ -70,8 +70,10 @@ class engineBox extends Box
 
     if (is_string($descriptor))
     {
-      // FILENAME ?
-      // XML STRING TO PARSE ?
+      if (strpos($destriptor, '<?xml') !== false)
+        $descriptor = WASimpleXML::tags($descriptor);
+      elseif (strlen($descriptor) < 512 && is_file($descriptor))
+        $descriptor = WASimpleXML::tags(file_get_contents($descriptor));
     }
     $this->descriptor = $descriptor;
     $this->parse();

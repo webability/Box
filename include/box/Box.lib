@@ -119,10 +119,12 @@ class Box extends WAObject
       {
         if (is_string($this->inputdata[$id]))
         {
-          if (strlen($this->inputdata[$id]) < 512 && is_file($this->inputdata[$id]))
+          if (strpos($this->inputdata[$id], '<?xml') !== false)
+            return new WALanguage($this->inputdata[$id]);
+          elseif (strlen($this->inputdata[$id]) < 512 && is_file($this->inputdata[$id]))
             return new WALanguage(file_get_contents($this->inputdata[$id]));
           else
-            return new WALanguage($this->inputdata[$id]);
+            return null;
         }
       }
       return $this->inputdata[$id];

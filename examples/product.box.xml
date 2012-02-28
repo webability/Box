@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<enginebox id="product">
+
+  <boxes>
+    <productcount>
+      <box>productcountBox</box>
+      <inputs>
+        <CATEGORY><from>inputs</from><data>CATEGORY</data></CATEGORY>
+      </inputs>
+    </productcount>
+
+    <productpages>
+      <box>paginationBox</box>
+      <inputs>
+        <PAGE><from>inputs</from><data>PAGE</data></PAGE>
+        <VARPAGE><from>inputs</from><data>VARPAGE</data></VARPAGE>
+        <DEFAULTPAGE><from>inputs</from><data>DEFAULTPAGE</data></DEFAULTPAGE>
+        <VARMAXPERPAGE><from>inputs</from><data>VARMAXPERPAGE</data></VARMAXPERPAGE>
+        <MAXPERPAGE><from>inputs</from><data>MAXPERPAGE</data></MAXPERPAGE>
+        <PAGENUMLEFT><from>inputs</from><data>PAGENUMLEFT</data></PAGENUMLEFT>
+        <PAGENUMCENTER><from>inputs</from><data>PAGENUMCENTER</data></PAGENUMCENTER>
+        <PAGENUMRIGHT><from>inputs</from><data>PAGENUMRIGHT</data></PAGENUMRIGHT>
+        <quantity><from>productcount</from><data>quantity</data></quantity>
+        <language><from>inputs</from><data>productpages.language</data></language>
+        <template><from>inputs</from><data>productpages.template</data></template>
+      </inputs>
+    </productpages>
+
+    <productquery>
+      <box>productqueryBox</box>
+      <inputs>
+        <CATEGORY><from>inputs</from><data>CATEGORY</data></CATEGORY>
+        <min><from>productpages</from><data>min</data></min>
+        <num><from>productpages</from><data>num</data></num>
+      </inputs>
+    </productquery>
+
+    <productloop>
+      <box>templateloopBox</box>
+      <inputs>
+        <SELECTED><from>inputs</from><data>SELECTED</data></SELECTED>
+        <list><from>productquery</from><data>list</data></list>
+        <language><from>inputs</from><data>productloop.language</data></language>
+        <template><from>inputs</from><data>productloop.template</data></template>
+      </inputs>
+    </productloop>
+
+    <productmatrix>
+      <box>matrixBox</box>
+      <inputs>
+        <ORIENTATION><from>inputs</from><data>ORIENTATION</data></ORIENTATION>
+        <NUMCELL><from>inputs</from><data>NUMCELL</data></NUMCELL>
+        <NUMMAX><from>inputs</from><data>MAXPERPAGE</data></NUMMAX>
+        <list><from>productloop</from><data>list</data></list>
+        <language><from>inputs</from><data>productmatrix.language</data></language>
+        <template><from>inputs</from><data>productmatrix.template</data></template>
+      </inputs>
+    </productmatrix>
+
+    <producttemplate>
+      <box>templateBox</box>
+      <inputs>
+        <elements>
+          <from>integrator</from>
+          <data>
+            <__MATRIX__><from>productmatrix</from><data>template</data></__MATRIX__>
+            <__PAGINATION__><from>productpages</from><data>template</data></__PAGINATION__>
+            <__PAGECATALOG__><from>inputs</from><data>PAGECATALOG</data></__PAGECATALOG__>
+            <__PAGEPRODUCT__><from>inputs</from><data>PAGEPRODUCT</data></__PAGEPRODUCT__>
+            <__PAGECART__><from>inputs</from><data>PAGECART</data></__PAGECART__>
+            <__VARMAXPERPAGE__><from>inputs</from><data>VARMAXPERPAGE</data></__VARMAXPERPAGE__>
+            <__VARCATEGORY__><from>inputs</from><data>VARCATEGORY</data></__VARCATEGORY__>
+            <__CATEGORY__><from>inputs</from><data>CATEGORY</data></__CATEGORY__>
+            <__VARPRODUCT__><from>inputs</from><data>VARPRODUCT</data></__VARPRODUCT__>
+          </data>
+        </elements>
+        <language><from>inputs</from><data>producttemplate.language</data></language>
+        <template><from>inputs</from><data>producttemplate.template</data></template>
+      </inputs>
+    </producttemplate>
+  </boxes>
+
+  <outputs>
+    <result><from>producttemplate</from><data>template</data></result>
+  </outputs>
+
+</enginebox>
