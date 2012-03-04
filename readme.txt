@@ -31,7 +31,7 @@ Thank you !
 
 Box Model v1 integrates DomCore into its structure. DomCore files libraries are copied into include/core, include/datasources and include/throwables
 
-This is the build 2
+This is the build 3
 
 - Change the build:
   edit Box.lib at the beginning and change the version number
@@ -42,6 +42,10 @@ Important notes:
 To do:
 
 ----
+
+Build 3: 2012/03/04:
+- Box modified to support also TemplateSource and LanguageSource as inputs
+- engineBox modified to read an XML file as flow definition
 
 Build 2: 2012/02/28:
 - Box modified to load template file and language file if the entry string is a file

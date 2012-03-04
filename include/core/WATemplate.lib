@@ -3,7 +3,7 @@
 /*
     WATemplate.lib, DomCore, the WebAbility(r) Core System
     Contains the basic class to compile an HTML/XML Template file to a PHP array/object
-    (c) 2008-2010 Philippe Thomassigny
+    (c) 2008-2012 Philippe Thomassigny
 
     This file is part of DomCore
 
@@ -25,8 +25,27 @@
 |------------------------------------------------------------------|
 | WATemplate: Template compiler                                    |
 |------------------------------------------------------------------|
+| - $template: string                                              |
+| - $metaelements: array                                           |
+| - $subtemplate: array                                            |
+| - $elements: array                                               |
 |------------------------------------------------------------------|
-| + ::compile($buffer: string): Array                              |
+| + new WATemplate($data: mixed)                                   |
+| + getTemplate($id: string): WATemplate                           |
+| + getTemplates(): array                                          |
+| + getClone(): WATemplate                                         |
+| + metaElements($elements: array, $reverse: boolean): void        |
+| + addElement($element: string, $value: string, $reverse: boolean): void|
+| + addElements($elements: array, $reverse: boolean): void         |
+| + resolve(): string                                              |
+| - dumpelements($elements: array, $level: int, $value: string): string|
+| - createkey(): string                                            |
+| - compile($data: string, $interprete: boolean): void             |
+| - separateSubTemplate($text: string, $itemnumber: int, $ID: string, $calcsubtemplates: boolean): array|
+| - getMetaElements($data): array                                  |
+| # serial($data: array): void                                     |
+| # unserial($data: array): void                                   |
+| + __toString(): string                                           |
 |------------------------------------------------------------------|
 @End_UML_Box */
 

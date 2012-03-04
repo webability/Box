@@ -32,7 +32,7 @@
 class Box extends WAObject
 {
   // Version of Box Model
-  const VERSION = '1.00.02';
+  const VERSION = '1.00.03';
 
   // Types of Input/Output
   const INTEGER = 1;
@@ -114,6 +114,10 @@ class Box extends WAObject
           else
             return new WATemplate($this->inputdata[$id]);
         }
+        elseif ($this->inputdata[$id] instanceof TemplateSource)
+        {
+          return $this->inputdata[$id]->read();
+        }
       }
       elseif ($this->input[$id] == Box::LANGUAGE)
       {
@@ -125,6 +129,10 @@ class Box extends WAObject
             return new WALanguage(file_get_contents($this->inputdata[$id]));
           else
             return null;
+        }
+        elseif ($this->inputdata[$id] instanceof LanguageSource)
+        {
+          return $this->inputdata[$id]->read();
         }
       }
       return $this->inputdata[$id];

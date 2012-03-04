@@ -2,8 +2,8 @@
 
 /*
     WALanguage.lib, DomCore, the WebAbility(r) Core System
-    Contains the basic class to compile and XML language file to a readable PHP array
-    (c) 2008-2010 Philippe Thomassigny
+    Contains the basic class to contains a language table
+    (c) 2008-2012 Philippe Thomassigny
 
     This file is part of DomCore
 
@@ -23,16 +23,30 @@
 
 /* @UML_Box
 |------------------------------------------------------------------|
-| WALanguage: XML language reader                                  |
+| WALanguage: Language table                                       |
 |------------------------------------------------------------------|
+| # id: string                                                     |
+| # lang: boolean                                                  |
+| # entries: Array(id => string)                                   |
 |------------------------------------------------------------------|
-| + ::compile($buffer: XML string): Array(string)                  |
-| - ::convert($xml: XMLNode): Array                                |
-| + ::create($id: string, $lang: string, $data: array of langs): string |
+| + new WALanguage($data, $id = null, $lang = null)                |
+| + getId(): string                                                |
+| + getLang(): string                                              |
+| + getEntry($id: string): string                                  |
+| + delEntry($id: string): void                                    |
+| + setEntry($id: string, $data: string): void                     |
+| + rewind(): void                                                 |
+| + current(): string                                              |
+| + key(): string                                                  |
+| + next(): string                                                 |
+| + valid(): boolean                                               |
+| # serial($data: array): void                                     |
+| # unserial($data: array): void                                   |
+| + __toString(): string                                           |
 |------------------------------------------------------------------|
 @End_UML_Box */
 
-// Static class to compile language XML file
+// Class to manage language table
 class WALanguage extends WAClass implements Iterator
 {
   protected $id = '';

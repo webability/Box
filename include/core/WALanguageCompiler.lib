@@ -1,9 +1,9 @@
 <?php
 
 /*
-    WALanguage.lib, DomCore, the WebAbility(r) Core System
-    Contains the basic class to compile and XML language file to a readable PHP array
-    (c) 2008-2010 Philippe Thomassigny
+    WALanguageCompiler.lib, DomCore, the WebAbility(r) Core System
+    Contains the basic class to compile an XML language file to a readable PHP array
+    (c) 2008-2012 Philippe Thomassigny
 
     This file is part of DomCore
 
@@ -23,12 +23,13 @@
 
 /* @UML_Box
 |------------------------------------------------------------------|
-| WALanguage: XML language reader                                  |
+| WALanguageCompiler: XML language reader                          |
 |------------------------------------------------------------------|
+| + ::id: string                                                   |
+| + ::lang: string                                                 |
 |------------------------------------------------------------------|
 | + ::compile($buffer: XML string): Array(string)                  |
-| - ::convert($xml: XMLNode): Array                                |
-| + ::create($id: string, $lang: string, $data: array of langs): string |
+| + ::create($id: string, $lang: string, $data: array of entries): string |
 |------------------------------------------------------------------|
 @End_UML_Box */
 
