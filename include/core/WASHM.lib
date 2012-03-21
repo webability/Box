@@ -25,8 +25,6 @@
 |------------------------------------------------------------------|
 | SHM : Shared Memory static object                                |
 |------------------------------------------------------------------|
-| - ::init : boolean                                               |
-| - ::messages : array(string => string)                           |
 | - size : integer                                                 |
 | - memid : integer                                                |
 | - shm : resource                                                 |
@@ -56,25 +54,12 @@
 
 class WASHM extends WADebug
 {
-  private static $init = false;
-  private static $messages = array(
-    'WASHM.nosharedmemory' => 'There is no available shared memory',
-    'WASHM.noattach' => 'We could not attach to our shared memory'
-  );
-
   private $size = 20971520; // 20 MB by default (1024*1024*20)
   private $memid = 10010;   // our version by default, arbitrary value
   private $shm = null;      // our shared memory segment resource pointer
 
   public function __construct($size = null, $memid = null)
   {
-    if (!self::$init)
-    {
-      // send messages to WAMessage
-      WAMessage::addMessages(self::$messages);
-      self::$init = true;
-    }
-
     parent::__construct();
 
     if (self::$debug || $this->localdebug)

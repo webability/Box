@@ -29,9 +29,17 @@ Thank you !
 
 ----
 
+Languages:
+EN - English language, native language
+FR - French language, maintained by Philippe Thomassigny
+ES - Spanish language, maintained by Philippe Thomassigny
+NL - Dutch language, maintained by Roland van Wanrooy, abo at wanrooy dot be
+
+----
+
 Box Model v1 integrates DomCore into its structure. DomCore files libraries are copied into include/core, include/datasources and include/throwables
 
-This is the build 3
+This is the build 4
 
 - Change the build:
   edit Box.lib at the beginning and change the version number
@@ -40,8 +48,17 @@ This is the build 3
 Important notes:
 
 To do:
+- Add set/get directly in boxes to read and set input/outputs instead of calling methods
 
 ----
+
+Build 4: 2012/03/21:
+- Messages adjusted to include DomCore messages
+- translation to Netherland (NL - Dutch) added
+- Markups added into XML language files to extract and insert entries automatically
+- Messages added to engineBox contructor to use WAMessage
+- Messages added to Box contructor to use WAMessage
+- New messages added to the XML languages
 
 Build 3: 2012/03/04:
 - Box modified to support also TemplateSource and LanguageSource as inputs

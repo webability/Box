@@ -29,30 +29,16 @@
 |------------------------------------------------------------------|
 @End_UML_Box */
 
-// the Engine of boxes framework
-// The descriptor have the following structure:
-/*
-  'boxes' => ( [boxid] => ( 'box' => [boxname],
-                            'inputs' => ( [inputid] => ( 'from' => [source], 'data' => [sourcedata]), ...
-                                        )
-                          ),
-               ...
-             ),
-  'outputs' => ( [outputid] => ( 'from' => [source], 'data' => [sourcedata] ), ...
-               )
-*/
-// [source] can be:
-// 'inputs' => will insert the input into the engineBox, and take the value from the inputs data of the engineBox when running
-// 'inline' => will take the value from the 'data' field directly
-// 'caller' => will call the caller object with the method in 'data', with the id of (input) as parameter
-// 'function' => will call the function in 'data', with the id of (input) as parameter
-// 'integrator' => will create an array with all the data into the 'data' array, every data is again a from/data parameter set.
-// [boxid] => will take the output 'data' of the box id
-
-// The descriptor file should be build by an admin 4GL GUI and used when needed
-
 class engineBox extends Box
 {
+  private static $init = false;
+  private static $messages = array(
+    'engineBox.nobox' => 'Error: there is no boxes into the descriptor.',
+    'engineBox.missingbox' => 'Error: there is no box with this ID:&nbsp;',
+    'engineBox.loop' => 'Error: there is a loop in the box flow.',
+    'engineBox.missingoutput' => 'Error: there is no output with this ID:&nbsp;'
+  );
+
   private $caller = null;
   private $descriptor = null;
   private $boxes = array();
@@ -61,6 +47,13 @@ class engineBox extends Box
 
   public function __construct($descriptor, $caller = null)
   {
+    if (!self::$init)
+    {
+      // send messages to WAMessage
+      WAMessage::addMessages(self::$messages);
+      self::$init = true;
+    }
+
     parent::__construct();
 
     if (self::$debug || $this->localdebug)
@@ -115,7 +108,7 @@ class engineBox extends Box
   private function parse()
   {
     if (!$this->descriptor['boxes'])
-      throw new BoxError('Error, there is no boxes into the descriptor');
+      throw new BoxError(WAMessage::getMessage('engineBox.nobox'));
 
     // load boxes and set inputs
     foreach($this->descriptor['boxes'] as $bid => $b)
@@ -172,7 +165,7 @@ class engineBox extends Box
         break;
       default:
         if (!isset($this->boxes[$input['from']]))
-          throw new BoxError('Error, there is no box called ' . $input['from']);
+          throw new BoxError(WAMessage::getMessage('engineBox.missingbox') . $input['from']);
         // call the input boxes if needed
         // lets save some code
         if (!$this->executed[$input['from']])
@@ -196,7 +189,7 @@ class engineBox extends Box
       return;
     if (isset($this->executing[$boxID]))
     {
-      throw new BoxError('Error, there is a loop in the box flow');
+      throw new BoxError(WAMessage::getMessage('engineBox.loop'));
       // Error: is there a LOOP into the descriptor ???
     }
     $this->executing[$boxID] = true;
@@ -234,7 +227,7 @@ class engineBox extends Box
   {
     // Run the box framework based on the descriptor
     if (!isset($this->descriptor['outputs'][$oID]))
-      throw new BoxError('Error, there is no output with this ID');
+      throw new BoxError(WAMessage::getMessage('engineBox.missingoutput') . $oID);
 
     if (!$this->executed[$this->descriptor['outputs'][$oID]['from']])
     {

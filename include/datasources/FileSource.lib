@@ -25,8 +25,6 @@
 |------------------------------------------------------------------|
 | FileSource : Basic file access                                   |
 |------------------------------------------------------------------|
-| - ::init : boolean                                               |
-| - ::messages : array(string => string)                           |
 | # basepath : string                                              |
 | # path : string                                                  |
 | # filename : string                                              |
@@ -47,11 +45,6 @@
 
 class FileSource extends DataSource
 {
-  private static $init = false;
-  private static $messages = array(
-    'FileSource.fileerror' => 'The file could not be opened for writing: '
-  );
-
   protected $basepath = '';  // absolute, terminated by /
   protected $path = '';      // terminated by /
   protected $filename = '';
@@ -59,13 +52,6 @@ class FileSource extends DataSource
 
   public function __construct($basepath, $path, $filename, $createdir = false)
   {
-    if (!self::$init)
-    {
-      // send messages to WAMessage
-      WAMessage::addMessages(self::$messages);
-      self::$init = true;
-    }
-
     parent::__construct(null);
 
     if (self::$debug || $this->localdebug)

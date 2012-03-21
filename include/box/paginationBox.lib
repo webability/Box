@@ -144,14 +144,14 @@ class paginationBox extends Box
     {
       $block = $temp->getTemplate("noblock");
       if (!$block)
-        throw new ExceptionBase($lang["error.pagination.noblock"]);
+        throw new BoxError($lang["error.pagination.noblock"]);
     }
     else
     {
       // 3. We integrate the template
       $block = $temp->getTemplate("block");
       if (!$block)
-        throw new ExceptionBase($lang["error.pagination.noblock"]);
+        throw new BoxError($lang["error.pagination.noblock"]);
 
       $tpage = $block->getTemplate("page");
       $tspage = $block->getTemplate("page.selected");

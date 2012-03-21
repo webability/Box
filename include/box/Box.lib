@@ -32,21 +32,27 @@
 class Box extends WAObject
 {
   // Version of Box Model
-  const VERSION = '1.00.03';
+  const VERSION = '1.00.04';
 
   // Types of Input/Output
   const INTEGER = 1;
   const STRING = 2;
   const RECORD = 3;
   const VECTORRECORD = 4;
-  const OBJECT = 5;
-  const VECTOR = 6;
-  const TEMPLATE = 10;
-  const VECTORTEMPLATE = 11;
-  const LANGUAGE = 20;
-  const VECTORLANGUAGE = 21;
-  const VECTORTRANSLATION = 22;
+  const VECTOR = 5;
+  const TEMPLATE = 11;
+  const VECTORTEMPLATE = 12;
+  const LANGUAGE = 21;
+  const VECTORLANGUAGE = 22;
   const MIXED = 31;
+
+  private static $init = false;
+  private static $messages = array(
+    'Box.duplicateinput' => 'Error: there is already an input with this ID:&nbsp;',
+    'Box.missinginput' => 'Error: there is no input with this ID:&nbsp;',
+    'Box.duplicateoutput' => 'Error: there is already an output with this ID:&nbsp;',
+    'Box.missingoutput' => 'Error: there is no output with this ID:&nbsp;'
+  );
 
   private $input = array();
   private $inputdata = array();
@@ -55,13 +61,20 @@ class Box extends WAObject
 
   public function __construct()
   {
+    if (!self::$init)
+    {
+      // send messages to WAMessage
+      WAMessage::addMessages(self::$messages);
+      self::$init = true;
+    }
+
     parent::__construct();
   }
 
   protected function addInput($id, $type, $default = null)
   {
     if (isset($this->input[$id]))
-      throw new BoxError('Error, there is already an input with this ID: ' . $id);
+      throw new BoxError(WAMessage::getMessage('Box.duplicateinput') . $id);
     $this->input[$id] = $type;
     $this->inputdata[$id] = $default;
   }
@@ -137,13 +150,13 @@ class Box extends WAObject
       }
       return $this->inputdata[$id];
     }
-    throw new BoxError('Error, there is no input with this ID: ' . $id);
+    throw new BoxError(WAMessage::getMessage('Box.missinginput') . $id);
   }
 
   protected function addOutput($id, $type)
   {
     if (isset($this->output[$id]))
-      throw new BoxError('Error, there is already an output with this ID: ' . $id);
+      throw new BoxError(WAMessage::getMessage('Box.duplicateoutput') . $id);
     $this->output[$id] = $type;
     $this->outputdata[$id] = null;
   }
@@ -163,7 +176,7 @@ class Box extends WAObject
   protected function setOutputData($id, $data)
   {
     if (!isset($this->output[$id]))
-      throw new BoxError('Error, there is no output with this ID: ' . $id);
+      throw new BoxError(WAMessage::getMessage('Box.duplicateoutput') . $id);
     $this->outputdata[$id] = $data;
   }
 
