@@ -39,7 +39,7 @@ NL - Dutch language, maintained by Roland van Wanrooy, abo at wanrooy dot be
 
 Box Model v1 integrates DomCore into its structure. DomCore files libraries are copied into include/core, include/datasources and include/throwables
 
-This is the build 4
+This is the build 5
 
 - Change the build:
   edit Box.lib at the beginning and change the version number
@@ -51,6 +51,10 @@ To do:
 - Add set/get directly in boxes to read and set input/outputs instead of calling methods
 
 ----
+
+Build 5: 2012/03/27:
+- parameterBox implemented
+- Example of product catalog with XML and parameterBox added
 
 Build 4: 2012/03/21:
 - Messages adjusted to include DomCore messages

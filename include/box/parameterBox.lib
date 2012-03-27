@@ -1,0 +1,147 @@
+<?php
+
+/*
+    parameterBox.lib, Box Model, A pattern for Real-life Web Programming
+    Creates a parameter template with an array.
+    (c) 2012 Philippe Thomassigny
+
+    This file is part of Box Model
+
+    Box Model is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Box Model is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with DomCore.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+/* @UML_Box
+|------------------------------------------------------------------|
+| parameterBox: parameters box class                               |
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+|------------------------------------------------------------------|
+@End_UML_Box */
+
+// creates a parameter
+
+class parameterBox extends Box
+{
+  private $types = array(
+      'inline' => true,  // managed locally
+      'input' => array('callback' => 'getInputData', 'object' => null),
+      'get' => array('callback' => 'getGet', 'object' => null),
+      'post' => array('callback' => 'getPost', 'object' => null),
+      'cookie' => array('callback' => 'getCookie', 'object' => null)
+    );
+  private $elements = array();
+  private $result = array();
+
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('elements', Box::VECTOR);
+    $this->addInput('parameters', Box::VECTOR);
+    $this->addOutput('elements', Box::VECTOR);
+  }
+
+  protected function addParameterType($name, $callback, $object = null)
+  {
+    $this->types[$name] = array('callback' => $callback, 'object' => $object);
+  }
+
+  protected function delParameterType($name)
+  {
+    unset($this->types[$name]);
+  }
+
+  protected function addParameter($name, $type)
+  {
+    $this->elements[$name] = $type;
+  }
+
+  public function run()
+  {
+    // Add the input expected elements
+    $elements = $this->getInputData('elements');
+
+    if ($elements && is_array($elements))
+    {
+      foreach($elements as $el => $type)
+      {
+        // we ignore not known types (or do we throw an error ?)
+        if (!isset($this->types[$type['type']]))
+          continue;
+        $this->elements[$el] = $type;
+      }
+    }
+
+    // Read each expected element
+    $result = array();
+    if (sizeof($this->elements))
+    {
+      foreach($this->elements as $el => $type)
+      {
+        if ($type['type'] == 'inline')
+        {
+          $result[$el] = $type['value'];
+        }
+        else
+        {
+          if (!$this->types[$type['type']]['object'])
+            $result[$el] = $this->{$this->types[$type['type']]['callback']}(isset($type['value'])?$type['value']:$el, $type);
+          else
+            $result[$el] = ${$this->types[$type['type']]['object']}->{$this->types[$type['type']]['callback']}(isset($type['value'])?$type['value']:$el, $type);
+        }
+      }
+    }
+    $this->result = $result;
+  }
+
+  protected function getGet($element, $data)
+  {
+    if (isset($_GET[$element]))
+      return $_GET[$element];
+    if (isset($data['default']))
+      return $data['default'];
+    return null;
+  }
+
+  protected function getPost($element, $data)
+  {
+    if (isset($_POST[$element]))
+      return $_POST[$element];
+    if (isset($data['default']))
+      return $data['default'];
+    return null;
+  }
+
+  protected function getCookie($element, $data)
+  {
+    if (isset($_COOKIE[$element]))
+      return $_COOKIE[$element];
+    if (isset($data['default']))
+      return $data['default'];
+    return null;
+  }
+
+  public function getOutputData($element)
+  {
+    // we simulate the original with any of our result elements or get the full elements if none
+    if (isset($this->result[$element]))
+      return $this->result[$element];
+    if ($element == 'elements')
+      return $this->result;
+    return null;
+  }
+
+}
+
+?>

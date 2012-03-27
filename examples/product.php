@@ -26,6 +26,9 @@
 <br />
 
 <h1>Product Catalog Example</h1>
+This example uses a box flow hard coded in the code (the array is explicit) and the parameters are directly set and red within the PHP code too.<br />
+The same example using an XML box definition and an extra box to read the parameters can be found <a href="productauto.php">here</a><br />
+<br />
 
 Matrix:<br />
 <form method="get" action="">

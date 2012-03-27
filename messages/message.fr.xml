@@ -13,6 +13,8 @@
   <entry id="WASHM.nosharedmemory"><![CDATA[Erreur: Il n'y a pas de mémoire compartie disponible]]></entry>
   <entry id="WASHM.noattach"><![CDATA[Erreur: La connection avec la mémoire compartie n'a pas pu s'établir]]></entry>
   <entry id="FileSource.fileerror"><![CDATA[Erreur: Le fichier n'a pas pu être créé en écriture:&nbsp;]]></entry>
+  <entry id="Singleton.nocore"><![CDATA[Error: Le singleton existe déjà et ne peut pas être cloné:&nbsp;]]></entry>
+  <entry id="Multiton.nocore"><![CDATA[Error: Le multiton existe déjà et ne peut pas être cloné:&nbsp;]]></entry>
 <!-- End Messages from DomCore -->
 <!-- Messages from Box -->
   <entry id="Box.duplicateinput"><![CDATA[Erreur: Il y a déjà une entrée avec cet ID:&nbsp;]]></entry>

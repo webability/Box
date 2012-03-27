@@ -94,9 +94,21 @@ class WASimpleXML
     $node = array();
     // the children
     $item = 0;
+    $names = array();
     foreach ($xml->children() as $name => $value)
     {
-      $node[$name] = self::converttags($value);
+      if (isset($node[$name]))
+      {
+        if (isset($names[$name]))
+          $node[$name][] = self::converttags($value);
+        else
+        {
+          $node[$name] = array($node[$name], self::converttags($value));
+          $names[$name] = true;
+        }
+      }
+      else
+        $node[$name] = self::converttags($value);
       $item ++;
     }
     if ($item)

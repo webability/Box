@@ -10,9 +10,11 @@
   <entry id="WAFile.mkdirproblem"><![CDATA[Fout: de map kon niet worden aangemaakt:]]></entry>
   <entry id="WAFile.unknownfile"><![CDATA[Fout: het bestand is niet herkend:]]></entry>
   <entry id="WAFile.baddir"><![CDATA[Fout: het pad naar recursief te verwijderen data is niet in overeenstemming:]]></entry>
-  <entry id="WASHM.nosharedmemory"><![CDATA[Fout: Er is geen beschikbare gedeelde geheugen]]></entry>
-  <entry id="WASHM.noattach"><![CDATA[Fout: We konden niet aan op onze gedeeld geheugen]]></entry>
-  <entry id="FileSource.fileerror"><![CDATA[Fout: Het bestand kan niet worden geopend voor schrijven:&nbsp;]]></entry>
+  <entry id="WASHM.nosharedmemory"><![CDATA[Fout: Er is geen gedeelde geheugenruimte beschikbaar.]]></entry>
+  <entry id="WASHM.noattach"><![CDATA[Fout: Onze gedeelde geheugenruimte kon niet worden gekoppeld.]]></entry>
+  <entry id="FileSource.fileerror"><![CDATA[Fout: Het bestand kon niet worden geopend voor schrijfacties:&nbsp;]]></entry>
+  <entry id="Singleton.nocore"><![CDATA[Fout: de singleton bestaat al en kan niet worden gekloond:&nbsp;]]></entry>
+  <entry id="Multiton.nocore"><![CDATA[Fout: de multiton bestaat al en kan niet worden gekloond:&nbsp;]]></entry>
 <!-- End Messages from DomCore -->
 <!-- Messages from Box -->
   <entry id="Box.duplicateinput"><![CDATA[Fout: er is al een ingang met deze ID:&nbsp;]]></entry>

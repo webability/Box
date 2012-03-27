@@ -2,34 +2,65 @@
 <enginebox id="product">
 
   <boxes>
+    <parameters>
+      <box>parameterBox</box>
+      <inputs>
+        <elements>
+          <from>inline</from>
+          <data>
+            <CATEGORY><type>get</type><value>category</value></CATEGORY>
+            <PAGE><type>get</type><value>page</value></PAGE>
+            <MAXPERPAGE><type>get</type><value>maxperpage</value><default>4</default></MAXPERPAGE>
+
+            <VARMAXPERPAGE><type>inline</type><value>maxperpage</value></VARMAXPERPAGE>
+            <VARPAGE><type>inline</type><value>page</value></VARPAGE>
+            <VARCATEGORY><type>inline</type><value>category</value></VARCATEGORY>
+            <VARPRODUCT><type>inline</type><value>product</value></VARPRODUCT>
+
+            <DEFAULTPAGE><type>inline</type><value>1</value></DEFAULTPAGE>
+            <PAGENUMLEFT><type>inline</type><value>2</value></PAGENUMLEFT>
+            <PAGENUMCENTER><type>inline</type><value>2</value></PAGENUMCENTER>
+            <PAGENUMRIGHT><type>inline</type><value>2</value></PAGENUMRIGHT>
+            <SELECTED><type>inline</type><value></value></SELECTED>
+            <ORIENTATION><type>inline</type><value>HORIZONTAL</value></ORIENTATION>
+            <NUMCELL><type>inline</type><value>2</value></NUMCELL>
+
+            <PAGECATALOG><type>inline</type><value>productauto.php</value></PAGECATALOG>
+            <PAGEPRODUCT><type>inline</type><value>productauto.php</value></PAGEPRODUCT>
+            <PAGECART><type>inline</type><value>productauto.php</value></PAGECART>
+          </data>
+        </elements>
+      </inputs>
+    </parameters>
+
     <productcount>
       <box>productcountBox</box>
       <inputs>
-        <CATEGORY><from>inputs</from><data>CATEGORY</data></CATEGORY>
+        <CATEGORY><from>parameters</from><data>CATEGORY</data></CATEGORY>
       </inputs>
     </productcount>
 
     <productpages>
       <box>paginationBox</box>
       <inputs>
-        <PAGE><from>inputs</from><data>PAGE</data></PAGE>
-        <VARPAGE><from>inputs</from><data>VARPAGE</data></VARPAGE>
-        <DEFAULTPAGE><from>inputs</from><data>DEFAULTPAGE</data></DEFAULTPAGE>
-        <VARMAXPERPAGE><from>inputs</from><data>VARMAXPERPAGE</data></VARMAXPERPAGE>
-        <MAXPERPAGE><from>inputs</from><data>MAXPERPAGE</data></MAXPERPAGE>
-        <PAGENUMLEFT><from>inputs</from><data>PAGENUMLEFT</data></PAGENUMLEFT>
-        <PAGENUMCENTER><from>inputs</from><data>PAGENUMCENTER</data></PAGENUMCENTER>
-        <PAGENUMRIGHT><from>inputs</from><data>PAGENUMRIGHT</data></PAGENUMRIGHT>
+        <PAGE><from>parameters</from><data>PAGE</data></PAGE>
+        <VARPAGE><from>parameters</from><data>VARPAGE</data></VARPAGE>
+        <DEFAULTPAGE><from>parameters</from><data>DEFAULTPAGE</data></DEFAULTPAGE>
+        <VARMAXPERPAGE><from>parameters</from><data>VARMAXPERPAGE</data></VARMAXPERPAGE>
+        <MAXPERPAGE><from>parameters</from><data>MAXPERPAGE</data></MAXPERPAGE>
+        <PAGENUMLEFT><from>parameters</from><data>PAGENUMLEFT</data></PAGENUMLEFT>
+        <PAGENUMCENTER><from>parameters</from><data>PAGENUMCENTER</data></PAGENUMCENTER>
+        <PAGENUMRIGHT><from>parameters</from><data>PAGENUMRIGHT</data></PAGENUMRIGHT>
         <quantity><from>productcount</from><data>quantity</data></quantity>
-        <language><from>inputs</from><data>productpages.language</data></language>
-        <template><from>inputs</from><data>productpages.template</data></template>
+        <language><from>inline</from><data>./pagination.en.xml</data></language>
+        <template><from>inline</from><data>./pagination.template</data></template>
       </inputs>
     </productpages>
 
     <productquery>
       <box>productqueryBox</box>
       <inputs>
-        <CATEGORY><from>inputs</from><data>CATEGORY</data></CATEGORY>
+        <CATEGORY><from>parameters</from><data>CATEGORY</data></CATEGORY>
         <min><from>productpages</from><data>min</data></min>
         <num><from>productpages</from><data>num</data></num>
       </inputs>
@@ -38,22 +69,22 @@
     <productloop>
       <box>templateloopBox</box>
       <inputs>
-        <SELECTED><from>inputs</from><data>SELECTED</data></SELECTED>
+        <SELECTED><from>parameters</from><data>SELECTED</data></SELECTED>
         <list><from>productquery</from><data>list</data></list>
-        <language><from>inputs</from><data>productloop.language</data></language>
-        <template><from>inputs</from><data>productloop.template</data></template>
+        <language><from>inline</from><data>./product.en.xml</data></language>
+        <template><from>inline</from><data>./product.template</data></template>
       </inputs>
     </productloop>
 
     <productmatrix>
       <box>matrixBox</box>
       <inputs>
-        <ORIENTATION><from>inputs</from><data>ORIENTATION</data></ORIENTATION>
-        <NUMCELL><from>inputs</from><data>NUMCELL</data></NUMCELL>
-        <NUMMAX><from>inputs</from><data>MAXPERPAGE</data></NUMMAX>
+        <ORIENTATION><from>parameters</from><data>ORIENTATION</data></ORIENTATION>
+        <NUMCELL><from>parameters</from><data>NUMCELL</data></NUMCELL>
+        <NUMMAX><from>parameters</from><data>MAXPERPAGE</data></NUMMAX>
         <list><from>productloop</from><data>list</data></list>
-        <language><from>inputs</from><data>productmatrix.language</data></language>
-        <template><from>inputs</from><data>productmatrix.template</data></template>
+        <language><from>inline</from><data>./matrix.en.xml</data></language>
+        <template><from>inline</from><data>./matrix.template</data></template>
       </inputs>
     </productmatrix>
 
@@ -65,17 +96,17 @@
           <data>
             <__MATRIX__><from>productmatrix</from><data>template</data></__MATRIX__>
             <__PAGINATION__><from>productpages</from><data>template</data></__PAGINATION__>
-            <__PAGECATALOG__><from>inputs</from><data>PAGECATALOG</data></__PAGECATALOG__>
-            <__PAGEPRODUCT__><from>inputs</from><data>PAGEPRODUCT</data></__PAGEPRODUCT__>
-            <__PAGECART__><from>inputs</from><data>PAGECART</data></__PAGECART__>
-            <__VARMAXPERPAGE__><from>inputs</from><data>VARMAXPERPAGE</data></__VARMAXPERPAGE__>
-            <__VARCATEGORY__><from>inputs</from><data>VARCATEGORY</data></__VARCATEGORY__>
-            <__CATEGORY__><from>inputs</from><data>CATEGORY</data></__CATEGORY__>
-            <__VARPRODUCT__><from>inputs</from><data>VARPRODUCT</data></__VARPRODUCT__>
+            <__PAGECATALOG__><from>parameters</from><data>PAGECATALOG</data></__PAGECATALOG__>
+            <__PAGEPRODUCT__><from>parameters</from><data>PAGEPRODUCT</data></__PAGEPRODUCT__>
+            <__PAGECART__><from>parameters</from><data>PAGECART</data></__PAGECART__>
+            <__VARMAXPERPAGE__><from>parameters</from><data>VARMAXPERPAGE</data></__VARMAXPERPAGE__>
+            <__VARCATEGORY__><from>parameters</from><data>VARCATEGORY</data></__VARCATEGORY__>
+            <__CATEGORY__><from>parameters</from><data>CATEGORY</data></__CATEGORY__>
+            <__VARPRODUCT__><from>parameters</from><data>VARPRODUCT</data></__VARPRODUCT__>
           </data>
         </elements>
-        <language><from>inputs</from><data>producttemplate.language</data></language>
-        <template><from>inputs</from><data>producttemplate.template</data></template>
+        <language><from>inline</from><data>./productpage.en.xml</data></language>
+        <template><from>inline</from><data>./productpage.template</data></template>
       </inputs>
     </producttemplate>
   </boxes>

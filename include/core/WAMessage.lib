@@ -45,14 +45,16 @@ class WAMessage
     'WAObject.badget' => 'Error: the attribute to read does not exist: ',
     'WAObject.badset' => 'Error: the attribute to write does not exist: ',
     'WAObject.badcall' => 'Error: the called method does not exist: ',
-    'WAClass.serial' => 'Error: you must declare your own serial() method',
-    'WAClass.unserial' => 'Error: you must declare your own unserial() method',
+    'WAClass.serial' => 'Error: you must declare your own serial() method.',
+    'WAClass.unserial' => 'Error: you must declare your own unserial() method.',
     'WAFile.mkdirproblem' => 'Error: the directory could not be created: ',
     'WAFile.unknownfile' => 'Error: the file is not recognized: ',
     'WAFile.baddir' => 'Error: the path to delete recursively is not compliant to be deleted: ',
-    'WASHM.nosharedmemory' => 'Error: There is no available shared memory',
-    'WASHM.noattach' => 'Error: We could not attach to our shared memory',
-    'FileSource.fileerror' => 'Error: The file could not be opened for writing: '
+    'WASHM.nosharedmemory' => 'Error: There is no available shared memory.',
+    'WASHM.noattach' => 'Error: We could not attach to our shared memory.',
+    'FileSource.file eerror' => 'Error: The file could not be opened for writing: ',
+    'Singleton.noclone' => 'Error: the singleton already exists and cannot be cloned: ',
+    'Multiton.noclone' => 'Error: the multiton already exists and cannot be cloned: '
     );
 
   // adds messages for an external static class
