@@ -25,7 +25,7 @@
 |------------------------------------------------------------------|
 | WADebug: Debug object for all WA objects and instances           |
 |------------------------------------------------------------------|
-| ! VERSION : version string                               |
+| ! VERSION : version string                                       |
 | ! SYSTEM : 1                                                     |
 | ! INFO : 2                                                       |
 | ! USER : 3                                                       |
@@ -80,7 +80,7 @@
 class WADebug
 {
   // DomCore version
-  const VERSION = '1.01.02';
+  const VERSION = '1.01.07';
 
   // All the functions entry
   const SYSTEM = 1;

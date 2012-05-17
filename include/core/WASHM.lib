@@ -161,6 +161,7 @@ class WASHM extends WADebug
     $this->attach();
     $var = null;
     $link = $this->getlink($id, 'r');
+    // The autoload is more likely going to send an exception if the shm serialized class cannot be found, warnings are not annoying, @ removed
     if ($link)
       $var = shm_get_var($this->shm, $link['p']);
     $this->detach();
@@ -272,6 +273,7 @@ class WASHM extends WADebug
     $size += (((strlen(serialize($pointer))+ (4 * PHP_INT_SIZE)) /4 ) * 4 ) + 4;
     foreach($links as $link)
     {
+      // The autoload is more likely going to send an exception if the shm serialized class cannot be found, warnings are not annoying, @ removed
       $var = shm_get_var($this->shm, $link['p']);
       $size += (((strlen(serialize($var))+ (4 * PHP_INT_SIZE)) /4 ) * 4 ) + 4;
     }

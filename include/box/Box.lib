@@ -32,7 +32,7 @@
 class Box extends WAObject
 {
   // Version of Box Model
-  const VERSION = '1.00.05';
+  const VERSION = '1.00.06';
 
   // Types of Input/Output
   const INTEGER = 1;

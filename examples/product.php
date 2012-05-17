@@ -29,10 +29,12 @@
 This example uses a box flow hard coded in the code (the array is explicit) and the parameters are directly set and red within the PHP code too.<br />
 The same example using an XML box definition and an extra box to read the parameters can be found <a href="productauto.php">here</a><br />
 <br />
+<b>The template is bootstrap-like so it is extremely easy to integrate into any responsive design you may want to use.</b><br />
+<br />
 
 Matrix:<br />
 <form method="get" action="">
-Max per page:<select name="maxperpage"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4" selected="selected">4</option><option value="5">5</option><option value="6">6</option></select><br />
+Max per page:<select name="maxperpage"><option value="1">1</option><option value="2">2</option><option value="3" selected="selected">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option></select><br />
 Category:<select name="category"><option value="main">Main</option><option value="other">Other</option></select><br />
 <input type="submit" value="Ver" />
 </form>
@@ -133,7 +135,7 @@ $boxdef = array(
 
 $maxperpage = $_GET['maxperpage'];
 if (!$maxperpage)
-  $maxperpage = 4;
+  $maxperpage = 3;
 
 $eb = new engineBox($boxdef);
 $eb->setInputs( array(

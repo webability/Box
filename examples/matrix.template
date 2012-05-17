@@ -1,14 +1,30 @@
+<style>
+.row
+{
+
+}
+
+.span4
+{
+  width: 280px;
+  float: left;
+  margin-left: 20px;
+  border: 1px solid #ccc;
+  padding: 10px;
+}
+</style>
+
+<div style="clear: both;"></div>
+<div class="row">
 __BLOCK__
+</div>
+<div style="clear: both;"></div>
 
-%%SUBTEMPLATE(block)%%
-<table cellpadding="0" cellspacing="0" border="0" width="100%">
+[[block]]
 __LINES__
-</table>
 
-%%SUBTEMPLATE(line)%%
-<tr>
+[[line]]
 __CELLS__
-</tr>
 
 %-- the cell format id is:
 
@@ -21,20 +37,20 @@ classification.cell.1                     is the default template used if none o
 
 --%
 
-%%SUBTEMPLATE(cell.1)%%
-<td style="width: 33%; text-align: center; vertical-align: top; padding-bottom: 10px; border: 1px solid blue;">__CONTENT__</td>
-%%ENDSUBTEMPLATE%%
+[[cell.1]]
+<div class="span4">
+__CONTENT__
+</div>
+[[]]
 
-%%SUBTEMPLATE(cell.empty)%%
-<td style="width: 33%; text-align: center; vertical-align: top;">&nbsp;</td>
-%%ENDSUBTEMPLATE%%
+[[cell.empty]][[]]
 
-%%ENDSUBTEMPLATE%%
+[[]]
 
 %-- If there is nothing to show --%
 
-%%SUBTEMPLATE(noblock)%%
+[[noblock]]
 &nbsp;
-%%ENDSUBTEMPLATE%%
+[[]]
 
-%%ENDSUBTEMPLATE%%
+[[]]

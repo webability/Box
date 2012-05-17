@@ -1,32 +1,116 @@
-__BLOCK__
+<style>
+.pagination
+{
+  height: 36px;
+  margin: 18px 0;
+  display: block;
+}
 
-%%SUBTEMPLATE(block)%%
-<table cellpadding="0" cellspacing="1" border="1">
+.pagination ul
+{
+  display: inline-block;
+  margin-bottom: 0;
+  margin-left: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  list-style: disc;
+  padding: 0;
+  margin: 0 0 9px 25px;
+  -webkit-margin-before: 1em;
+  -webkit-margin-after: 1em;
+  -webkit-margin-start: 0px;
+  -webkit-margin-end: 0px;
+  -webkit-padding-start: 40px;
+}
+
+.pagination li
+{
+  display: inline;
+  line-height: 18px;
+  text-align: -webkit-match-parent;
+}
+
+.pagination li:first-child a
+{
+  border-left-width: 1px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+}
+.pagination a
+{
+  float: left;
+  padding: 0 14px;
+  line-height: 34px;
+  text-decoration: none;
+  border: 1px solid #DDD;
+  border-left-width: 0;
+}
+
+.pagination .active a
+{
+  color: #999;
+  cursor: default;
+}
+
+.pagination a:hover, .pagination .active a
+{
+  background-color: whiteSmoke;
+}
+
+a:hover
+{
+  color: #005580;
+  text-decoration: underline;
+}
+
+a:hover, a:active
+{
+  outline: 0;
+}
+
+.pagination .disabled span, .pagination .disabled a, .pagination .disabled a:hover
+{
+  color: #999;
+  cursor: default;
+  background-color: transparent;
+}
+
+</style>
+
+<div class="pagination">
+  <ul>
+__BLOCK__
+  </ul>
+</div>
+
+[[block]]
 __PAGES__
-</table>
 
 %-- PAGES are:
-    [1] [2] [3] ... [x-1] [x] [x+1] ... [N-2] [N-1] [N]
 --%
 
-%%SUBTEMPLATE(page)%%
-<td>[<a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a>]</td>
-%%ENDSUBTEMPLATE%%
+[[page]]
+<li><a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a></li>
+[[]]
 
-%%SUBTEMPLATE(page.selected)%%
-<td>[[<a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a>]]</td>
-%%ENDSUBTEMPLATE%%
+[[page.selected]]
+<li class="active"><a href="__PAGECATALOG__?__VARCATEGORY__=__CATEGORY__&__VARPAGE__=__PAGENUM__&__VARMAXPERPAGE__=__MAXPERPAGE__">__PAGENUM__</a></li>
+[[]]
 
-%%SUBTEMPLATE(interpage)%%
-<td>&nbsp;-&nbsp;</td>
-%%ENDSUBTEMPLATE%%
+[[interpage]]
+[[]]
 
-%%SUBTEMPLATE(interblock)%%
-<td>...</td>
-%%ENDSUBTEMPLATE%%
+[[interblock]]
+<li class="disabled"><a href="#">...</a></li>
+[[]]
 
-%%ENDSUBTEMPLATE%%
+[[]]
 
 %-- If there is nothing to show --%
 
-%%SUBTEMPLATE(noblock)%%%%ENDSUBTEMPLATE%%
+[[noblock]][[]]

@@ -29,6 +29,8 @@
 This example uses an XML box flow and the parameters are read through a new parameterBox.<br />
 The same example with the data hardcoded in PHP can be found <a href="product.php">here</a><br />
 <br />
+<b>The template is bootstrap-like so it is extremely easy to integrate into any responsive design you may want to use.</b><br />
+<br />
 
 Matrix:<br />
 <form method="get" action="">

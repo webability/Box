@@ -70,8 +70,7 @@ class parameterBox extends Box
   public function run()
   {
     // Add the input expected elements
-    $elements = $this->getInputData('elements');
-
+    $elements = parent::getInputData('elements');
     if ($elements && is_array($elements))
     {
       foreach($elements as $el => $type)
@@ -129,6 +128,15 @@ class parameterBox extends Box
       return $_COOKIE[$element];
     if (isset($data['default']))
       return $data['default'];
+    return null;
+  }
+
+  protected function getInputData($element)
+  {
+    // we simulate the original with any of our parameter elements or get the full elements if none
+    $params = parent::getInputData('parameters');
+    if (isset($params[$element]))
+      return $params[$element];
     return null;
   }
 
