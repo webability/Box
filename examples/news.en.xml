@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<language id="news" lang="en">
+  <entry id="title"><![CDATA[Title]]></entry>
+  <entry id="date"><![CDATA[Date]]></entry>
+  <entry id="teaser"><![CDATA[Teaser]]></entry>
+  <entry id="readmore"><![CDATA[Read more...]]></entry>
+</language>

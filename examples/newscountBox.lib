@@ -1,0 +1,31 @@
+<?php
+
+// Gets the quantity of news of the category
+// entry: none
+// exit: quantity
+// params: category of newss
+
+class newscountBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('CATEGORY', Box::STRING, 'main');
+    $this->addOutput('quantity', Box::INTEGER);
+  }
+
+  public function run()
+  {
+    // Simulates a connection to a database and gets back
+    // 7 news
+
+    // Here we should make a query like
+    // select count(*) from news where status='published';
+
+    $this->setOutputData('quantity', 7);
+  }
+
+}
+
+?>

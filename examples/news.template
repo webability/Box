@@ -1,0 +1,6 @@
+[[base]]
+##title##: <a href="__PAGENEWS__?__VARNEWS__={key}" class="title">{title}</a><br />
+##date##: {date}<br />
+##teaser##: {teaser}<br />
+<br /><a href="__PAGEFULLARTICLE__?&amp;__VARNEWS__={key}" class="readmore">##readmore##</a>
+[[]]

@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<enginebox id="news">
+
+  <boxes>
+    <parameters>
+      <box>parameterBox</box>
+      <inputs>
+        <elements>
+          <from>inline</from>
+          <data>
+            <PAGE><type>get</type><value>page</value></PAGE>
+            <MAXPERPAGE><type>get</type><value>maxperpage</value><default>4</default></MAXPERPAGE>
+
+            <VARMAXPERPAGE><type>inline</type><value>maxperpage</value></VARMAXPERPAGE>
+            <VARPAGE><type>inline</type><value>page</value></VARPAGE>
+            <VARNEWS><type>inline</type><value>news</value></VARNEWS>
+
+            <DEFAULTPAGE><type>inline</type><value>1</value></DEFAULTPAGE>
+            <PAGENUMLEFT><type>inline</type><value>2</value></PAGENUMLEFT>
+            <PAGENUMCENTER><type>inline</type><value>2</value></PAGENUMCENTER>
+            <PAGENUMRIGHT><type>inline</type><value>2</value></PAGENUMRIGHT>
+            <SELECTED><type>inline</type><value></value></SELECTED>
+            <ORIENTATION><type>inline</type><value>HORIZONTAL</value></ORIENTATION>
+            <NUMCELL><type>inline</type><value>2</value></NUMCELL>
+
+            <PAGECATALOG><type>inline</type><value>news.php</value></PAGECATALOG>
+            <PAGENEWS><type>inline</type><value>news.php</value></PAGENEWS>
+            <PAGEFULLARTICLE><type>inline</type><value>news.php</value></PAGEFULLARTICLE>
+          </data>
+        </elements>
+      </inputs>
+    </parameters>
+
+    <newscount>
+      <box>newscountBox</box>
+      <inputs>
+      </inputs>
+    </newscount>
+
+    <newspages>
+      <box>paginationBox</box>
+      <inputs>
+        <PAGE><from>parameters</from><data>PAGE</data></PAGE>
+        <VARPAGE><from>parameters</from><data>VARPAGE</data></VARPAGE>
+        <DEFAULTPAGE><from>parameters</from><data>DEFAULTPAGE</data></DEFAULTPAGE>
+        <VARMAXPERPAGE><from>parameters</from><data>VARMAXPERPAGE</data></VARMAXPERPAGE>
+        <MAXPERPAGE><from>parameters</from><data>MAXPERPAGE</data></MAXPERPAGE>
+        <PAGENUMLEFT><from>parameters</from><data>PAGENUMLEFT</data></PAGENUMLEFT>
+        <PAGENUMCENTER><from>parameters</from><data>PAGENUMCENTER</data></PAGENUMCENTER>
+        <PAGENUMRIGHT><from>parameters</from><data>PAGENUMRIGHT</data></PAGENUMRIGHT>
+        <quantity><from>newscount</from><data>quantity</data></quantity>
+        <language><from>inline</from><data>./pagination.en.xml</data></language>
+        <template><from>inline</from><data>./pagination.template</data></template>
+      </inputs>
+    </newspages>
+
+    <newsquery>
+      <box>newsqueryBox</box>
+      <inputs>
+        <min><from>newspages</from><data>min</data></min>
+        <num><from>newspages</from><data>num</data></num>
+      </inputs>
+    </newsquery>
+
+    <newsloop>
+      <box>templateloopBox</box>
+      <inputs>
+        <SELECTED><from>parameters</from><data>SELECTED</data></SELECTED>
+        <list><from>newsquery</from><data>list</data></list>
+        <language><from>inline</from><data>./news.en.xml</data></language>
+        <template><from>inline</from><data>./news.template</data></template>
+      </inputs>
+    </newsloop>
+
+    <newsmatrix>
+      <box>matrixBox</box>
+      <inputs>
+        <ORIENTATION><from>parameters</from><data>ORIENTATION</data></ORIENTATION>
+        <NUMCELL><from>parameters</from><data>NUMCELL</data></NUMCELL>
+        <NUMMAX><from>parameters</from><data>MAXPERPAGE</data></NUMMAX>
+        <list><from>newsloop</from><data>list</data></list>
+        <language><from>inline</from><data>./matrix.en.xml</data></language>
+        <template><from>inline</from><data>./matrix.template</data></template>
+      </inputs>
+    </newsmatrix>
+
+    <newstemplate>
+      <box>templateBox</box>
+      <inputs>
+        <elements>
+          <from>integrator</from>
+          <data>
+            <__MATRIX__><from>newsmatrix</from><data>template</data></__MATRIX__>
+            <__PAGINATION__><from>newspages</from><data>template</data></__PAGINATION__>
+            <__PAGECATALOG__><from>parameters</from><data>PAGECATALOG</data></__PAGECATALOG__>
+            <__PAGENEWS__><from>parameters</from><data>PAGENEWS</data></__PAGENEWS__>
+            <__PAGEFULLARTICLE__><from>parameters</from><data>PAGEFULLARTICLE</data></__PAGEFULLARTICLE__>
+            <__VARMAXPERPAGE__><from>parameters</from><data>VARMAXPERPAGE</data></__VARMAXPERPAGE__>
+            <__VARNEWS__><from>parameters</from><data>VARNEWS</data></__VARNEWS__>
+          </data>
+        </elements>
+        <language><from>inline</from><data>./newspage.en.xml</data></language>
+        <template><from>inline</from><data>./newspage.template</data></template>
+      </inputs>
+    </newstemplate>
+  </boxes>
+
+  <outputs>
+    <result><from>newstemplate</from><data>template</data></result>
+  </outputs>
+
+</enginebox>

@@ -39,7 +39,7 @@ NL - Dutch language, maintained by Roland van Wanrooy, abo at wanrooy dot be
 
 Box Model v1 integrates DomCore into its structure. DomCore files libraries are copied into include/core, include/datasources and include/throwables
 
-This is the build 6
+This is the build 7
 
 - Change the build:
   edit Box.lib at the beginning and change the version number
@@ -55,6 +55,10 @@ To do:
 - integrate new example as press room ? blog ? etc
 
 ----
+
+Build 7: 2012/05/25:
+- DomCore upgraded to 1.01.08 (template bug)
+- New example added using the same boxes as the first example to show reusability
 
 Build 6: 2012/05/17:
 - Error corrected into engineBox to read the descriptor (bad variable name)

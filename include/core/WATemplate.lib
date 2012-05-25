@@ -457,12 +457,11 @@ class WATemplate extends WAClass
   {
     if ($interprete)
     {
-      $data = rawurlencode($data);
       // ------------------------
       // First remove all the comments
       $elem = array();
 
-      $regelement = '/%25--(.*?)--%25'.
+      $regelement = '/%--(.*?)--%'.
                     '/s';
       preg_match_all($regelement, $data, $resultelement);
       if (!empty($resultelement[0]))
@@ -486,8 +485,8 @@ class WATemplate extends WAClass
       }
 
       // Parse the sub templates
-      $reg = '/%25%25(SUBTEMPLATE)%28([\d\w\.\|_-]+?)%29%25%25(%0D){0,1}(%0A){0,1}(.*?)%25%25ENDSUBTEMPLATE%25%25(%0D){0,1}(%0A){0,1}|%5B(%5B)([\d\w\.\|_-]+?)%5D%5D(%0D){0,1}(%0A){0,1}(.*?)%5B%5B%5D%5D(%0D){0,1}(%0A){0,1}/s';
-      $regin = '/%25%25(SUBTEMPLATE)%28([\d\w\.\|_-]+?)%29%25%25(%0D){0,1}(%0A){0,1}(.*?)$|%5B(%5B)([\d\w\.\|_-]+?)%5D%5D(%0D){0,1}(%0A){0,1}(.*?)$/s';
+      $reg = '/%%(SUBTEMPLATE)\(([\d\w\.\|_-]+?)\)%%(\r){0,1}(\n){0,1}(.*?)%%ENDSUBTEMPLATE%%(\r){0,1}(\n){0,1}|\[(\[)([\d\w\.\|_-]+?)\]\](\r){0,1}(\n){0,1}(.*?)\[\[\]\](\r){0,1}(\n){0,1}/sD';
+      $regin = '/%%(SUBTEMPLATE)\(([\d\w\.\|_-]+?)\)%%(\r){0,1}(\n){0,1}(.*?)$|\[(\[)([\d\w\.\|_-]+?)\]\](\r){0,1}(\n){0,1}(.*?)$/sD';
 
       $loop = true;
       $subt = array();
@@ -537,22 +536,22 @@ class WATemplate extends WAClass
             }
             if($result[1][$k] && $result[5][$k] != $resultin)
             {
-              $resultout .= '%25%25ENDSUBTEMPLATE%25%25';
+              $resultout .= '%%ENDSUBTEMPLATE%%';
             }
             elseif($result[8][$k] && $result[12][$k] != $resultin)
             {
-              $resultout .= '%5B%5B%5D%5D';
+              $resultout .= '[[]]';
             }
             $pos = strpos($data, $resultout);
             $data = substr_replace($data, '___'.$ID.$itemnumber.'___', $pos, strlen($resultout));
 
-            $subt[$itemnumber++] = array(rawurldecode($resulttemp), rawurldecode($resultin));
+            $subt[$itemnumber++] = array($resulttemp, $resultin);
           }
         }
         else
           $loop = false;
       }
-      $data = rawurldecode($data);
+      $data = $data;
 
       $tmp = $this->separateSubTemplate($data, $itemnumber, $ID, $subt);
       $this->template = $tmp['template'];
@@ -629,14 +628,13 @@ class WATemplate extends WAClass
 
   private function getMetaElements($data)
   {
-    $data = rawurlencode($data);
     // separate meta elements
     $regelement = '/'.
-                  '%26(%26)(.*?)%26%26|'.     // meta element &&xx&&
-                  '%40(%40)(.*?)%40%40|'.     // meta element @@xx@@
-                  '%3F(%3F)(.*?)%3F%3F|'.     // meta element ??xx??
-                  '%7B(%7B)(.*?)%7D%7D|'.     // meta element {{xx}}
-                  '%21(%21)(.*?)%21%21|'.     // meta element !!xx!! debug
+                  '&(&)(.*?)&&|'.         // meta element &&xx&&
+                  '@(@)(.*?)@@|'.         // meta element @@xx@@
+                  '\?(\?)(.*?)\?\?|'.     // meta element ??xx??
+                  '\{(\{)(.*?)\}\}|'.     // meta element {{xx}}
+                  '\!(\!)(.*?)\!\!'.      // meta element !!xx!! debug
                   '/s';
     preg_match_all($regelement, $data, $resultelement);
 
@@ -648,38 +646,38 @@ class WATemplate extends WAClass
       {
         if ($resultelement[2][$k])
         {
-          $xme = explode(':', rawurldecode($resultelement[2][$k]));
+          $xme = explode(':', $resultelement[2][$k]);
           if (!isset($xme[1]))
             $xme[1] = $xme[0];
-          $metaelements[] = array(rawurldecode($resultelement[1][$k]), rawurldecode($resultelement[0][$k]), $this->getPath($xme[0]), $this->getPathLast($xme[1]));
+          $metaelements[] = array($resultelement[1][$k], $resultelement[0][$k], $this->getPath($xme[0]), $this->getPathLast($xme[1]));
         }
         elseif ($resultelement[4][$k])
         {
-          $xme = explode(':', rawurldecode($resultelement[4][$k]));
+          $xme = explode(':', $resultelement[4][$k]);
           if (!isset($xme[1]))
             $xme[1] = $xme[0];
           if (!isset($xme[2]))
             $xme[2] = null;
-          $metaelements[] = array(rawurldecode($resultelement[3][$k]), rawurldecode($resultelement[0][$k]), $this->getPath($xme[0]), $this->getPathLast($xme[1]), $xme[2]);
+          $metaelements[] = array($resultelement[3][$k], $resultelement[0][$k], $this->getPath($xme[0]), $this->getPathLast($xme[1]), $xme[2]);
         }
         elseif ($resultelement[6][$k])
         {
-          $xme = explode(':', rawurldecode($resultelement[6][$k]));
+          $xme = explode(':', $resultelement[6][$k]);
           if (!isset($xme[1]))
             $xme[1] = $xme[0];
           if (!isset($xme[2]))
             $xme[2] = null;
-          $metaelements[] = array(rawurldecode($resultelement[5][$k]), rawurldecode($resultelement[0][$k]), $this->getPath($xme[0]), $this->getPathLast($xme[1]), $xme[2]);
+          $metaelements[] = array($resultelement[5][$k], $resultelement[0][$k], $this->getPath($xme[0]), $this->getPathLast($xme[1]), $xme[2]);
         }
         elseif ($resultelement[8][$k])
         {
-          $xme = rawurldecode($resultelement[8][$k]);
-          $metaelements[] = array(rawurldecode($resultelement[7][$k]), rawurldecode($resultelement[0][$k]), $this->getPath($xme));
+          $xme = $resultelement[8][$k];
+          $metaelements[] = array($resultelement[7][$k], $resultelement[0][$k], $this->getPath($xme));
         }
         elseif ($resultelement[10][$k])
         {
-          $xme = rawurldecode($resultelement[10][$k]);
-          $metaelements[] = array(rawurldecode($resultelement[9][$k]), rawurldecode($resultelement[0][$k]), $xme);
+          $xme = $resultelement[10][$k];
+          $metaelements[] = array($resultelement[9][$k], $resultelement[0][$k], $xme);
         }
       }
     }

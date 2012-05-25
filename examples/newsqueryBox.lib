@@ -1,0 +1,65 @@
+<?php
+
+// Gets the list of newss of the category
+// entry: min, num
+// exit: list
+// params: category of newss
+
+class newsqueryBox extends Box
+{
+  public function __construct()
+  {
+    parent::__construct();
+
+    $this->addInput('CATEGORY', Box::STRING);
+    $this->addInput('min', Box::INTEGER);
+    $this->addInput('num', Box::INTEGER);
+
+    $this->addOutput('list', Box::VECTORRECORD);
+  }
+
+  public function run()
+  {
+    // Simulates a connection to a database and gets back
+    // 7 news
+    $min = trim($this->getInputData('min'));
+    $num = trim($this->getInputData('num'));
+
+    // Here we should make a query like
+    // select * from news where status = 'published' limit $num offset $min;
+
+    $news = array(
+      array('{key}' => 1, '{title}' => 'Site launch', '{date}' => '2012-01-08'),
+      array('{key}' => 2, '{title}' => 'Release #1', '{date}' => '2012-01-20'),
+      array('{key}' => 3, '{title}' => 'Release #2', '{date}' => '2012-02-12'),
+      array('{key}' => 4, '{title}' => 'Documentation released', '{date}' => '2012-02-28'),
+      array('{key}' => 5, '{title}' => 'Release #3', '{date}' => '2012-03-10'),
+      array('{key}' => 6, '{title}' => 'Release #4', '{date}' => '2012-03-12'),
+      array('{key}' => 7, '{title}' => 'Release #5', '{date}' => '2012-04-15')
+    );
+
+    foreach($news as $k => $n)
+    {
+      $news[$k]['{teaser}'] = 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, ...';
+    }
+
+    krsort($news);
+
+    // we filter num, min if needed, to simulate limit and offset
+    $npr = array();
+    $item = 0;
+    foreach($news as $p)
+    {
+      if ($item++ < $min)
+        continue;
+      $npr[] = $p;
+      if ($item >= $min + $num)
+        break;
+    }
+
+    $this->setOutputData('list', $npr);
+  }
+
+}
+
+?>
